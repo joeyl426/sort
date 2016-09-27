@@ -4,9 +4,29 @@
 
 ; Given a two-argument function and a list, write a function that returns a list containing
 ; the elements of list sorted according to the given predicate.
-; (define sort)
+(define sort
+  (lambda (f L)
+    (if (null? L)
+        L
+        (if (null? (cdr L))
+            L
+            (merge-based-on-f f
+             (sort f (odd-indeces L))
+             (sort f (even-indeces L)))))))
+
 
 ; Helper functions:
+
+; mergesort based on given function f
+(define merge-based-on-f
+  (lambda (f L1 L2)
+    (if (null? L2)
+        L1
+        (if (null? L1)
+            L2
+            (if (f (car L1) (car L2))
+                (cons (car L1) (merge-based-on-f f (cdr L1) L2))
+                (cons (car L2) (merge-based-on-f f (cdr L2) L1)))))))
 
 ; simple mergesort in scheme, implemented by splitting the lists not in
 ; half, but into odd and even indeces. written with help from online references
@@ -46,4 +66,7 @@
               '()
               (cons (car (cdr L)) (even-indeces (cdr (cdr L))))))))
 
-(merge-sort '(3 4 5 2 3 8 9 70 34 23 12 3 45 34))
+; test cases
+; (merge-sort '(3 4 5 2 3 8 9 70 34 23 12 3 45 34))
+(sort < '(3 5 9 1 125 2 34 1 16 1 14 61 61))
+(sort > '(3 5 9 1 125 2 34 1 16 1 14 61 61))
